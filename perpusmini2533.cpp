@@ -73,3 +73,69 @@ void tampilBuku(){
         printf("Status   : %s\n", data[i].status == 0 ? "Tersedia" : "Dipinjam");
     }
 }
+
+void cariBuku(){
+    char cari[50];
+    printf("\nMasukan judul buku: ");
+    getchar();
+    fget(cari, sizeof(cari), stdin);
+    cari[strcspn(cari, "\n")] = 0;
+
+    strcpy(data[jumlah].judul, cari);
+    int i = 0;
+    while(strcmp(data[i].judul, cari) ! = 0){
+        i++;
+    }
+
+    if(i<jumlah){
+        printf("\nBuku ditemukan!\n");
+        printf("Kode     : %s\n", data[i].kode);
+        printf("Judul    : %s\n", data[i].judul);
+        printf("Penulis  : %s\n", data[i].penulis);
+        printf("Tahun    : %s\n", data[i].tahun);
+        printf("Status   : %s\n", data[i].status == 0 ? "Tersedia" : "Dipinjam");
+    } else {
+        printf("buku tidak ditemukan!\n");
+    }
+}
+
+void shellsort(){
+    int gap, i, j;
+    struct Buku temp;
+    for(gap = jumlah/2; gap > 0; gap /=2){
+        for(i = gap; i < jumlah; i++){
+            temp = data[i];
+            for(j = i; j>= gap && strcmp(data[j-gap].judul, temp.judul)> 0; j -= gap){
+                data[j]=data[j-gap];
+            }
+            data[j]=temp;
+        }
+    }
+    simpanFile();
+    printf("data berhasil diurutkan!\n");
+}
+
+void hapusBuku(){
+    char kode[10];
+    printf("\nMasukkan kode buku: ");
+    scanf("%s", kode);
+
+    int i, found = 0;
+    for(i = 0; i < jumlah; i++){
+        if(strcmp(data[i].kode, kode) == 0){
+            found = 1;
+            break;
+        }
+    }
+
+    if(found){
+        for(int j = i; j <jumlah - 1; j++){
+            data[j] = data[j+1];
+        }
+        jumlah--;
+        simpanFile();
+        printf("Data berhasil dihapus!\n");
+    } else {
+        printf("Data tidak ditemukan!\n");
+    }
+}

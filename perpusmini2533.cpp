@@ -177,4 +177,24 @@ void pinjamanBuku()
             break;
         }
     }
+
+    if (found)
+    {
+        if (data[i].status == 0)
+        {
+            data[i].status = 1;
+            simpanFile();
+            printf("buku berhasil dipinjam!!\n");
+        }
+    }
+    else
+    {
+        printf("buku tidak ditemukan1\n")
+    }
+
+    void kembalikanbuku()
+    {
+        char kode[10];
+        printf("\nmasukkan kode buku:");
+    }
 }

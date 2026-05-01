@@ -3,7 +3,8 @@
 #include <string.h>
 
 #define MAX 100
-struct Buku{
+struct Buku
+{
     char kode[10];
     char judul[50];
     char penulis[50];
@@ -11,31 +12,34 @@ struct Buku{
     int status;
 };
 
-struct Buku data[MAX]
-int jumlah = 0;
+struct Buku data[MAX] int jumlah = 0;
 
-void simpanFile(){
+void simpanFile()
+{
     FILE *fp = fopen("data.dat", "wb");
-    if(fp == NULL){
+    if (fp == NULL)
+    {
         printf("Gagal membuka file!\n");
         return;
     }
-    fwrite(%jumalah, sizeof(int), 1, fp);
+    fwrite(% jumalah, sizeof(int), 1, fp);
     fwrite(data, sizeof(struct Buku), jumlah, fp);
     fclose(fp);
 }
 
-vodi loadFile(){
+vodi loadFile()
+{
     FILE *fp = fopen("data.dat", "rb");
-    if(fp ! = NULL){
+    if (fp != NULL)
+    {
         fread(&jumalah, sizeof(int), 1, fp);
-        fread(data,sizeof(struct Buku), jumlah, fp);
+        fread(data, sizeof(struct Buku), jumlah, fp);
         fclose(fp);
-
     }
 }
 
-void tambahBuku(){
+void tambahBuku()
+{
     printf("\n==== Tambah Buku ====\n");
     printf("Kode Buku    : ");
     scanf("%s", data[jumlah].kode);
@@ -58,14 +62,17 @@ void tambahBuku(){
     printf("Data berhasil ditambahkan!\n");
 }
 
-void tampilBuku(){
+void tampilBuku()
+{
     printf("\n=== Data Buku ===\n");
-    if(jumlah == 0){
+    if (jumlah == 0)
+    {
         printf("Data kosong!\n");
         return;
     }
-    for(int i = 0; i <jumlah; i++){
-        printf("\nData ke-%d\n", i+1);
+    for (int i = 0; i < jumlah; i++)
+    {
+        printf("\nData ke-%d\n", i + 1);
         printf("Kode     : %s\n", data[i].kode);
         printf("Judul    : %s\n", data[i].judul);
         printf("Penulis  : %s\n", data[i].penulis);
@@ -74,7 +81,8 @@ void tampilBuku(){
     }
 }
 
-void cariBuku(){
+void cariBuku()
+{
     char cari[50];
     printf("\nMasukan judul buku: ");
     getchar();
@@ -83,59 +91,90 @@ void cariBuku(){
 
     strcpy(data[jumlah].judul, cari);
     int i = 0;
-    while(strcmp(data[i].judul, cari) ! = 0){
+    while (strcmp(data[i].judul, cari) != 0)
+    {
         i++;
     }
 
-    if(i<jumlah){
+    if (i < jumlah)
+    {
         printf("\nBuku ditemukan!\n");
         printf("Kode     : %s\n", data[i].kode);
         printf("Judul    : %s\n", data[i].judul);
         printf("Penulis  : %s\n", data[i].penulis);
         printf("Tahun    : %s\n", data[i].tahun);
         printf("Status   : %s\n", data[i].status == 0 ? "Tersedia" : "Dipinjam");
-    } else {
+    }
+    else
+    {
         printf("buku tidak ditemukan!\n");
     }
 }
 
-void shellsort(){
+void shellsort()
+{
     int gap, i, j;
     struct Buku temp;
-    for(gap = jumlah/2; gap > 0; gap /=2){
-        for(i = gap; i < jumlah; i++){
+    for (gap = jumlah / 2; gap > 0; gap /= 2)
+    {
+        for (i = gap; i < jumlah; i++)
+        {
             temp = data[i];
-            for(j = i; j>= gap && strcmp(data[j-gap].judul, temp.judul)> 0; j -= gap){
-                data[j]=data[j-gap];
+            for (j = i; j >= gap && strcmp(data[j - gap].judul, temp.judul) > 0; j -= gap)
+            {
+                data[j] = data[j - gap];
             }
-            data[j]=temp;
+            data[j] = temp;
         }
     }
     simpanFile();
     printf("data berhasil diurutkan!\n");
 }
 
-void hapusBuku(){
+void hapusBuku()
+{
     char kode[10];
     printf("\nMasukkan kode buku: ");
     scanf("%s", kode);
 
     int i, found = 0;
-    for(i = 0; i < jumlah; i++){
-        if(strcmp(data[i].kode, kode) == 0){
+    for (i = 0; i < jumlah; i++)
+    {
+        if (strcmp(data[i].kode, kode) == 0)
+        {
             found = 1;
             break;
         }
     }
 
-    if(found){
-        for(int j = i; j <jumlah - 1; j++){
-            data[j] = data[j+1];
+    if (found)
+    {
+        for (int j = i; j < jumlah - 1; j++)
+        {
+            data[j] = data[j + 1];
         }
         jumlah--;
         simpanFile();
         printf("Data berhasil dihapus!\n");
-    } else {
+    }
+    else
+    {
         printf("Data tidak ditemukan!\n");
+    }
+}
+void pinjamanBuku()
+{
+    char kode[10];
+    printf("\nmasukkan kode buku:");
+    scanf("%s", kode);
+
+    int i, found = 0;
+    for (i = 0; i < jumlah; i++)
+    {
+        if (strcmp(data[i].kode, kode) == 0)
+        {
+            found = 1;
+            break;
+        }
     }
 }

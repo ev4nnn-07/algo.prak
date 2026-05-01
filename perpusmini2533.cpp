@@ -195,6 +195,6 @@ void pinjamanBuku()
     void kembalikanbuku()
     {
         char kode[10];
-        printf("\nmasukkan kode buku:");
+        printf("\nmasukkan kode buku yang ingin dikembalikan:");
     }
 }

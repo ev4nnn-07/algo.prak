@@ -162,10 +162,13 @@ void hapusBuku()
         printf("Data tidak ditemukan!\n");
     }
 }
+
+// meminjam buku
+
 void pinjamanBuku()
 {
     char kode[10];
-    printf("\nmasukkan kode buku:");
+    printf("\nmasukkan kode buku yang ingin di pinjam:");
     scanf("%s", kode);
 
     int i, found = 0;
@@ -185,16 +188,47 @@ void pinjamanBuku()
             data[i].status = 1;
             simpanFile();
             printf("buku berhasil dipinjam!!\n");
-        }
+        } else { printf("buku sedang dipinjam!!\n");
+    }
     }
     else
     {
         printf("buku tidak ditemukan1\n")
     }
+    }
+
+// pengembalian buku
 
     void kembalikanbuku()
     {
         char kode[10];
         printf("\nmasukkan kode buku yang ingin dikembalikan:");
-    }
+        scanf("%s", kode);
+
+        int i, found = 0;
+        for(i = 0; i < jumlah; i++){
+            if(strcmp(data[i].kode, kode) == 0) {
+                found = 1;
+                break;
+            }
+        }
+        
+        if (foundd) {
+            if(data[i].status == 1) {
+                data[i].status = 0;
+                simpan file();
+                printf("buku berhaasil dikembalikan!\n");
+            } else {
+                printf("buku tidak sedang dipinjam!!\n");
+            } else {
+                printf("buku tidak ditemukan!\n");
+            }
+        }
+
+// menu utamanya
+
+int main()
+{
+    loadFile();
+    int pilihan;
 }

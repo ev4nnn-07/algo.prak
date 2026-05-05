@@ -188,51 +188,64 @@ void pinjamanBuku()
             data[i].status = 1;
             simpanFile();
             printf("buku berhasil dipinjam!!\n");
-        } else { printf("buku sedang dipinjam!!\n");
-    }
+        }
+        else
+        {
+            printf("buku sedang dipinjam!!\n");
+        }
     }
     else
     {
         printf("buku tidak ditemukan1\n")
     }
-    }
+}
 
 // pengembalian buku
 
-    void kembalikanbuku()
-    {
-        char kode[10];
-        printf("\nmasukkan kode buku yang ingin dikembalikan:");
-        scanf("%s", kode);
+void kembalikanbuku()
+{
+    char kode[10];
+    printf("\nmasukkan kode buku yang ingin dikembalikan:");
+    scanf("%s", kode);
 
-        int i, found = 0;
-        for(i = 0; i < jumlah; i++){
-            if(strcmp(data[i].kode, kode) == 0) {
-                found = 1;
-                break;
-            }
+    int i, found = 0;
+    for (i = 0; i < jumlah; i++)
+    {
+        if (strcmp(data[i].kode, kode) == 0)
+        {
+            found = 1;
+            break;
         }
-        
-        if (found) {
-            if(data[i].status == 1) {
-                data[i].status = 0;
-                simpanFile();
-                printf("buku berhasil dikembalikan!\n");
-            } else {
-                printf("buku tidak sedang dipinjam!!\n");
-            } else {
-                printf("buku tidak ditemukan!\n");
-            }
+    }
+
+    if (found)
+    {
+        if (data[i].status == 1)
+        {
+            data[i].status = 0;
+            simpanFile();
+            printf("buku berhasil dikembalikan!\n");
         }
+        else
+        {
+            printf("buku tidak sedang dipinjam!!\n");
+        }
+        else
+        {
+            printf("buku tidak ditemukan!\n");
+        }
+    }
+}
 
 // menu utamanya
 
 int main()
 {
-    loadFile(); 
+    loadFile();
     int pilihan;
 
-    do { 
+    do
+    {
         printtf("\n=== SISTEM PERPUSTAKAKAN MINI ===\n");
         printf("1. Tambah Buku\n");
         printf("2. Tampil Buku\n");
@@ -245,35 +258,36 @@ int main()
         printf("pilih menu:   ");
         scanf("%d", &pilihan);
 
-        switch(pilihan) {
-            case 1:
+        switch (pilihan)
+        {
+        case 1:
             tambahBuku();
             break;
-            case 2:
+        case 2:
             tampilBuku();
             break;
-            case 3:
+        case 3:
             cariBuku();
             break;
-            case 4:
+        case 4:
             shellsort();
             break;
-            case 5:
+        case 5:
             hapusBuku();
             break;
-            case 6:
+        case 6:
             pinjamanBuku();
             break;
-            case 7:
+        case 7:
             kembalikanbuku();
             break;
-            case 8:
+        case 8:
             printf("Terima kasih!\n");
             break;
-            default: 
+        default:
             printf("pilihan tidak valid!\n");
         }
-    }while(pilihan != 8);
+    } while (pilihan != 8);
 
-        return 0;
-    }
+    return 0;
+}

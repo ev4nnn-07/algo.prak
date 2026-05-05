@@ -213,11 +213,11 @@ void pinjamanBuku()
             }
         }
         
-        if (foundd) {
+        if (found) {
             if(data[i].status == 1) {
                 data[i].status = 0;
-                simpan file();
-                printf("buku berhaasil dikembalikan!\n");
+                simpanFile();
+                printf("buku berhasil dikembalikan!\n");
             } else {
                 printf("buku tidak sedang dipinjam!!\n");
             } else {
@@ -229,6 +229,51 @@ void pinjamanBuku()
 
 int main()
 {
-    loadFile();
+    loadFile(); 
     int pilihan;
-}
+
+    do { 
+        printtf("\n=== SISTEM PERPUSTAKAKAN MINI ===\n");
+        printf("1. Tambah Buku\n");
+        printf("2. Tampil Buku\n");
+        printf("3. cari buku\n");
+        printf("4. Urutkan Buku\n");
+        printf("5. Hapus Buku\n");
+        printf("6. Pinjam Buku\n");
+        printf("7. Kembalikan Buku\n");
+        printf("8. kelur\n");
+        printf("pilih menu:   ");
+        scanf("%d", &pilihan);
+
+        switch(pilihan) {
+            case 1:
+            tambahBuku();
+            break;
+            case 2:
+            tampilBuku();
+            break;
+            case 3:
+            cariBuku();
+            break;
+            case 4:
+            shellsort();
+            break;
+            case 5:
+            hapusBuku();
+            break;
+            case 6:
+            pinjamanBuku();
+            break;
+            case 7:
+            kembalikanbuku();
+            break;
+            case 8:
+            printf("Terima kasih!\n");
+            break;
+            default: 
+            printf("pilihan tidak valid!\n");
+        }
+    }while(pilihan != 8);
+
+        return 0;
+    }

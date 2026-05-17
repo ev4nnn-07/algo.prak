@@ -12,7 +12,12 @@ struct Buku {
 };
 
 struct Buku data[MAX];
-    int jumlah = 0;
+int jumlah = 0;
+
+void tampilBukuFilter(int status);
+void printLine();
+void printHeader();
+void printBook(struct Buku *buku, int nomor);
 
 void simpanFile(){
     FILE *fp = fopen("data.dat", "wb");
@@ -39,7 +44,7 @@ void loadFile(){
 void tambahBuku(){
     printf("\n==== Tambah Buku ====\n");
     int n;
-    printf("Berapa banyakk buku yang ditambah?");
+    printf("Berapa banyakk buku yang ditambah? ");
     scanf("%d", &n);
     getchar();
 
@@ -67,21 +72,7 @@ void tambahBuku(){
 }
 
 void tampilBuku(){
-    printf("\n=== Data Buku ===\n");
-    if (jumlah == 0)
-    {
-        printf("Data kosong!\n");
-        return;
-    }
-    for (int i = 0; i < jumlah; i++)
-    {
-        printf("\nData ke-%d\n", i + 1);
-        printf("Kode     : %s\n", data[i].kode);
-        printf("Judul    : %s\n", data[i].judul);
-        printf("Penulis  : %s\n", data[i].penulis);
-        printf("Tahun    : %d\n", data[i].tahun);
-        printf("Status   : %s\n", data[i].status == 0 ? "Tersedia" : "Dipinjam");
-    }
+    tampilBukuFilter(-1);
 }
 
 void cariBuku(){
@@ -94,47 +85,158 @@ void cariBuku(){
     int i = 0;
     for(i=0; i<jumlah;i++)
     {
-        if(strcmp(data[i]. judul, cari)==0)
-    {
-        break;
+        if(strstr(data[i].judul, cari) != NULL)
+        {
+            break;
+        }
     }
-}
 
     if (i < jumlah)
     {
-        printf("\nBuku ditemukan!\n");
-        printf("Kode     : %s\n", data[i].kode);
-        printf("Judul    : %s\n", data[i].judul);
-        printf("Penulis  : %s\n", data[i].penulis);
-        printf("Tahun    : %d\n", data[i].tahun);
-        printf("Status   : %s\n", data[i].status == 0 ? "Tersedia" : "Dipinjam");
+        printf("\n=== Hasil Pencarian Buku ===\n");
+        printHeader();
+        printBook(&data[i], 1);
+        printLine();
     }
     else
     {
-        printf("Buku tidak ditemukan!\n");
+        printf("\nBuku tidak ditemukan!\n");
     }
 }
 
-void shellsort()
+void printLine()
 {
-    int gap, i, j;
-    struct Buku temp;
-    for (gap = jumlah / 2; gap > 0; gap /= 2){
-        for (i = gap; i < jumlah; i++)
+    printf("======================================================================\n");
+}
+
+void printHeader(){
+    printLine();
+    printf("%-4s %-8s %-20s %-18s %-6s %-10s\n", "No", "Kode", "Judul", "Penulis", "Tahun", "Status");
+    printLine();
+}
+
+void printBook(struct Buku *buku, int nomor){
+    printf("%-4d %-8s %-20.20s %-18.18s %-6d %-10s\n",
+           nomor,
+           buku->kode,
+           buku->judul,
+           buku->penulis,
+           buku->tahun,
+           buku->status == 0 ? "Tersedia" : "Dipinjam");
+}
+
+void tampilBukuFilter(int status){
+    int found = 0;
+    int no = 1;
+    struct Buku *p = data;
+
+    if (jumlah == 0)
+    {
+        printf("\nData kosong!\n");
+        return;
+    }
+
+    if (status == -1)
+        printf("\n=== Daftar Semua Buku ===\n");
+    else if (status == 0)
+        printf("\n=== Daftar Buku Tersedia ===\n");
+    else
+        printf("\n=== Daftar Buku Dipinjam ===\n");
+
+    printHeader();
+    for (int i = 0; i < jumlah; i++, p++)
+    {
+        if (status == -1 || p->status == status)
         {
-            temp = data[i];
-            for (j = i; j >= gap && strcmp(data[j - gap].judul, temp.judul) > 0; j -= gap){
-                data[j] = data[j - gap];
-            }
-            data[j] = temp;
+            printBook(p, no);
+            no++;
+            found = 1;
         }
     }
-    simpanFile();
-    printf("Data berhasil diurutkan!\n");
+
+    if (!found)
+    {
+        printf("Tidak ada buku pada kategori ini.\n");
+    }
+    printLine();
 }
 
-void hapusBuku()
-{
+void bubbleSortByTitle(){
+    for (int i = 0; i < jumlah - 1; i++)
+    {
+        for (int j = 0; j < jumlah - 1 - i; j++)
+        {
+            if (strcmp(data[j].judul, data[j + 1].judul) > 0)
+            {
+                struct Buku temp = data[j];
+                data[j] = data[j + 1];
+                data[j + 1] = temp;
+            }
+        }
+    }
+}
+
+void selectionSortByYear(int descending){
+    for (int i = 0; i < jumlah - 1; i++)
+    {
+        int idx = i;
+        for (int j = i + 1; j < jumlah; j++)
+        {
+            if (descending)
+            {
+                if (data[j].tahun > data[idx].tahun)
+                    idx = j;
+            }
+            else
+            {
+                if (data[j].tahun < data[idx].tahun)
+                    idx = j;
+            }
+        }
+        if (idx != i)
+        {
+            struct Buku temp = data[i];
+            data[i] = data[idx];
+            data[idx] = temp;
+        }
+    }
+}
+
+void urutkanBuku(){
+    int pilihan;
+    printf("\n=== Menu Urut Buku ===\n");
+    printf("1. Urutkan Judul (A-Z)\n");
+    printf("2. Urutkan Tahun (Terlama -> Terbaru)\n");
+    printf("3. Urutkan Tahun (Terbaru -> Terlama)\n");
+    printf("Pilih jenis urutan: ");
+    scanf("%d", &pilihan);
+    getchar();
+
+    if (pilihan == 1)
+    {
+        bubbleSortByTitle();
+        printf("Data berhasil diurutkan berdasarkan judul.\n");
+    }
+    else if (pilihan == 2)
+    {
+        selectionSortByYear(0);
+        printf("Data berhasil diurutkan berdasarkan tahun (terlama -> terbaru).\n");
+    }
+    else if (pilihan == 3)
+    {
+        selectionSortByYear(1);
+        printf("Data berhasil diurutkan berdasarkan tahun (terbaru -> terlama).\n");
+    }
+    else
+    {
+        printf("Pilihan urutan tidak valid.\n");
+        return;
+    }
+
+    simpanFile();
+}
+
+void hapusBuku(){
     char kode[10];
     printf("\nMasukkan kode buku: ");
     scanf("%s", kode);
@@ -164,10 +266,7 @@ void hapusBuku()
         printf("Data tidak ditemukan!\n");
     }
 }
-
-// meminjam buku
-void pinjamanBuku()
-{
+void pinjamanBuku(){
     char kode[10];
     printf("\nMasukkan kode buku yang ingin di pinjam:");
     scanf("%s", kode);
@@ -196,10 +295,7 @@ void pinjamanBuku()
     }
 }
 
-// pengembalian buku
-
-void kembalikanbuku()
-{
+void kembalikanbuku(){
     char kode[10];
     printf("\nMasukkan kode buku yang ingin dikembalikan:");
     scanf("%s", kode);
@@ -229,24 +325,26 @@ void kembalikanbuku()
         }
     }
 
-// menu utamanya
-int main()
-{
+int main(){
     loadFile();
     int pilihan;
-
     do
     {
-        printf("\n=== SISTEM PERPUSTAKAKAN MINI ===\n");
+        printf("\n==============================================================\n");
+        printf("                 SISTEM PERPUSTAKAAN MINI                  \n");
+        printf("==============================================================\n");
         printf("1. Tambah Buku\n");
-        printf("2. Tampil Buku\n");
-        printf("3. Cari buku\n");
-        printf("4. Urutkan Buku\n");
-        printf("5. Hapus Buku\n");
-        printf("6. Pinjam Buku\n");
-        printf("7. Kembalikan Buku\n");
-        printf("8. Keluar\n");
-        printf("Pilih menu:   ");
+        printf("2. Tampil Semua Buku\n");
+        printf("3. Tampil Buku Tersedia\n");
+        printf("4. Tampil Buku Dipinjam\n");
+        printf("5. Cari Buku\n");
+        printf("6. Urutkan Buku\n");
+        printf("7. Hapus Buku\n");
+        printf("8. Pinjam Buku\n");
+        printf("9. Kembalikan Buku\n");
+        printf("10. Keluar\n");
+        printf("==============================================================\n");
+        printf("Pilih menu: ");
         scanf("%d", &pilihan);
         getchar();
 
@@ -256,30 +354,35 @@ int main()
             tambahBuku();
             break;
         case 2:
-            tampilBuku();
+            tampilBukuFilter(-1);
             break;
         case 3:
-            cariBuku();
+            tampilBukuFilter(0);
             break;
         case 4:
-            shellsort();
+            tampilBukuFilter(1);
             break;
         case 5:
-            hapusBuku();
+            cariBuku();
             break;
         case 6:
-            pinjamanBuku();
+            urutkanBuku();
             break;
         case 7:
-            kembalikanbuku();
+            hapusBuku();
             break;
         case 8:
+            pinjamanBuku();
+            break;
+        case 9:
+            kembalikanbuku();
+            break;
+        case 10:
             printf("Terima kasih!\n");
             break;
         default:
             printf("Pilihan tidak valid!\n");
         }
-    } while (pilihan != 8);
-
+    } while (pilihan != 10);
     return 0;
 }

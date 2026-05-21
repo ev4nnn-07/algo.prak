@@ -400,8 +400,6 @@ int main(){
     do {
         printf("\n=================================================================\n");
         printf("||                   SISTEM PERPUSTAKAAN MINI                  ||\n");
-        printf("||                   ------------------------                  ||\n");
-        printf("||               (Doubly Linked List Edition)                  ||\n");
         printf("=================================================================\n");
         printf("  [1] Tambah Buku Baru             [6] Urutkan Daftar Buku\n");
         printf("  [2] Tampilkan Semua Buku         [7] Hapus Buku dari Sistem\n");

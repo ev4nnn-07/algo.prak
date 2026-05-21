@@ -2,22 +2,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-// =================================================================
-// [MODUL I & MODUL VI]: POINTER & LINKED LIST GANDA
-// Struct Buku dimodifikasi menjadi Node Doubly Linked List
-// =================================================================
 struct Buku {
     char kode[10];
     char judul[50];
     char penulis[50];
     int tahun;
-    int status; // 0 = Tersedia, 1 = Dipinjam
+    int status; 
     
-    struct Buku *kiri;  // Pointer ke node sebelumnya (Prev)
-    struct Buku *kanan; // Pointer ke node setelahnya (Next)
+    struct Buku *kiri;  
+    struct Buku *kanan; 
 };
 
-// Deklarasi Pointer Global untuk Linked List Ganda
 struct Buku *awal = NULL;
 struct Buku *akhir = NULL;
 
@@ -26,17 +21,13 @@ void printLine();
 void printHeader();
 void printBook(struct Buku *buku, int nomor);
 
-// =================================================================
-// [MODUL IV]: OPERASI FILE PADA LINKED LIST GANDA
-// =================================================================
 void simpanFile(){
     FILE *fp = fopen("data.dat", "wb");
     if (fp == NULL) {
-        printf("Gagal membuka file!\n");
+        printf("\n [!] Gagal membuka file database!\n");
         return;
     }
     
-    // Menelusuri linked list dari awal sampai akhir untuk direkam
     struct Buku *bantu = awal;
     while (bantu != NULL) {
         fwrite(bantu, sizeof(struct Buku), 1, fp);
@@ -47,18 +38,15 @@ void simpanFile(){
 
 void loadFile(){
     FILE *fp = fopen("data.dat", "rb");
-    if (fp == NULL) return; // Jika file tidak ada, lewati
+    if (fp == NULL) return; 
 
     struct Buku temp;
-    // Membaca per blok Node dari file biner
     while (fread(&temp, sizeof(struct Buku), 1, fp) == 1) {
-        // [MODUL I]: Alokasi memori dinamis menggunakan Pointer
         struct Buku *NB = (struct Buku *)malloc(sizeof(struct Buku));
         *NB = temp;
         NB->kiri = NULL;
         NB->kanan = NULL;
 
-        // Proses Sisip Belakang (Insert Last) pada Linked List Ganda
         if (awal == NULL) {
             awal = NB;
             akhir = NB;
@@ -72,35 +60,37 @@ void loadFile(){
 }
 
 void tambahBuku(){
-    printf("\n==== Tambah Buku ====\n");
+    printf("\n +================================================+\n");
+    printf(" |                [+] TAMBAH BUKU                 |\n");
+    printf(" +================================================+\n");
     int n;
-    printf("Berapa banyak buku yang ditambah? ");
+    printf("  [?] Berapa banyak buku yang ingin ditambah? : ");
     scanf("%d", &n);
     getchar();
 
     for(int k = 0; k < n; k++){
+        printf("\n  -- Data Buku ke-%d --\n", k+1);
         struct Buku *NB = (struct Buku *)malloc(sizeof(struct Buku));
         
-        printf("Kode Buku    : ");
+        printf("  >> Kode Buku    : ");
         scanf("%s", NB->kode);
         getchar();
 
-        printf("Judul Buku   : ");
+        printf("  >> Judul Buku   : ");
         fgets(NB->judul, sizeof(NB->judul), stdin);
         NB->judul[strcspn(NB->judul, "\n")] = 0;
 
-        printf("Penulis      : ");
+        printf("  >> Penulis      : ");
         fgets(NB->penulis, sizeof(NB->penulis), stdin);
         NB->penulis[strcspn(NB->penulis, "\n")] = 0;
 
-        printf("Tahun Terbit :");
+        printf("  >> Tahun Terbit : ");
         scanf("%d", &NB->tahun);
 
         NB->status = 0;
         NB->kiri = NULL;
         NB->kanan = NULL;
 
-        // [MODUL VI]: Logika penyisipan simpul baru di ujung Kanan (Insert Last)
         if (awal == NULL) {
             awal = NB;
             akhir = NB;
@@ -111,19 +101,19 @@ void tambahBuku(){
         }
     }
     simpanFile();
-    printf("Data berhasil ditambahkan!\n");
+    printf("\n [✓] Mantap! %d Data buku berhasil ditambahkan ke sistem!\n", n);
 }
 
 void tampilBuku(){
     tampilBukuFilter(-1);
 }
 
-// =================================================================
-// [MODUL II]: PENCARIAN DATA (Sequential Search pada Linked List)
-// =================================================================
 void cariBuku(){
     char cari[50];
-    printf("\nMasukan judul buku: ");
+    printf("\n +================================================+\n");
+    printf(" |                 [?] CARI BUKU                  |\n");
+    printf(" +================================================+\n");
+    printf("  >> Masukan judul buku yang dicari: ");
     getchar();
     fgets(cari, sizeof(cari), stdin);
     cari[strcspn(cari, "\n")] = 0;
@@ -131,7 +121,6 @@ void cariBuku(){
     struct Buku *bantu = awal;
     int found = 0;
     
-    // Penelusuran Linked List
     while (bantu != NULL) {
         if(strstr(bantu->judul, cari) != NULL) {
             found = 1;
@@ -141,40 +130,69 @@ void cariBuku(){
     }
 
     if (found) {
-        printf("\n=== Hasil Pencarian Buku ===\n");
+        printf("\n  [✓] BUKU DITEMUKAN!\n");
         printHeader();
         printBook(bantu, 1);
         printLine();
     } else {
-        printf("\nBuku tidak ditemukan!\n");
+        printf("\n  [!] Yah, buku dengan judul \"%s\" tidak ditemukan.\n", cari);
     }
 }
 
+// ============== PERBAIKAN TOTAL TABEL & STRING ==============
 void printLine() {
-    printf("======================================================================\n");
+    printf(" +------+------------+--------------------------------+--------------------------------+--------+------------+\n");
 }
 
 void printHeader(){
     printLine();
-    printf("%-4s %-8s %-20s %-18s %-6s %-10s\n", "No", "Kode", "Judul", "Penulis", "Tahun", "Status");
+    printf(" | %-4s | %-10s | %-30s | %-30s | %-6s | %-10s |\n", "No", "Kode", "Judul Buku", "Penulis", "Tahun", "Status");
     printLine();
 }
 
 void printBook(struct Buku *buku, int nomor){
-    printf("%-4d %-8s %-20.20s %-18.18s %-6d %-10s\n",
-           nomor, buku->kode, buku->judul, buku->penulis,
+    char tempJudul[35] = {0};
+    char tempPenulis[35] = {0};
+    
+    // 1. Ambil maksimal 30 karakter saja dengan aman
+    strncpy(tempJudul, buku->judul, 30);
+    tempJudul[30] = '\0'; // Pastikan terkunci dengan null terminator
+    
+    strncpy(tempPenulis, buku->penulis, 30);
+    tempPenulis[30] = '\0';
+
+    // 2. Filter pembersih karakter sampah/tersembunyi dari file data.dat
+    // Jika ada karakter di luar alfabet/angka (ASCII < 32 atau > 126), jadikan spasi.
+    for(int i = 0; i < 30 && tempJudul[i] != '\0'; i++) {
+        if((unsigned char)tempJudul[i] < 32 || (unsigned char)tempJudul[i] > 126) {
+            tempJudul[i] = ' '; 
+        }
+    }
+    for(int i = 0; i < 30 && tempPenulis[i] != '\0'; i++) {
+        if((unsigned char)tempPenulis[i] < 32 || (unsigned char)tempPenulis[i] > 126) {
+            tempPenulis[i] = ' ';
+        }
+    }
+
+    // 3. Cetak menggunakan string yang sudah sangat bersih
+    printf(" | %-4d | %-10s | %-30s | %-30s | %-6d | %-10s |\n",
+           nomor, buku->kode, tempJudul, tempPenulis,
            buku->tahun, buku->status == 0 ? "Tersedia" : "Dipinjam");
 }
+// ============================================================
 
 void tampilBukuFilter(int status){
     if (awal == NULL) {
-        printf("\nData kosong!\n");
+        printf("\n [!] Ups, Database Perpustakaan saat ini masih kosong.\n");
         return;
     }
 
-    if (status == -1) printf("\n=== Daftar Semua Buku ===\n");
-    else if (status == 0) printf("\n=== Daftar Buku Tersedia ===\n");
-    else printf("\n=== Daftar Buku Dipinjam ===\n");
+    if (status == -1) 
+        printf("\n >>> DAFTAR SELURUH BUKU PERPUSTAKAAN <<<\n");
+    else if (status == 0) 
+        printf("\n >>> DAFTAR BUKU YANG SIAP DIPINJAM <<<\n");
+    else 
+        printf("\n >>> DAFTAR BUKU YANG SEDANG DIPINJAM <<<\n");
 
     printHeader();
     int no = 1, found = 0;
@@ -189,11 +207,12 @@ void tampilBukuFilter(int status){
         bantu = bantu->kanan;
     }
 
-    if (!found) printf("Tidak ada buku pada kategori ini.\n");
+    if (!found) {
+        printf(" | %-105s |\n", "                                         (Tidak ada data buku pada kategori ini)");
+    }
     printLine();
 }
 
-// Fungsi Bantuan untuk menukar isi Data antar Node (Tanpa memutus pointer)
 void swapData(struct Buku *a, struct Buku *b) {
     char tempKode[10], tempJudul[50], tempPenulis[50];
     int tempTahun, tempStatus;
@@ -206,9 +225,6 @@ void swapData(struct Buku *a, struct Buku *b) {
     tempStatus = a->status; a->status = b->status; b->status = tempStatus;
 }
 
-// =================================================================
-// [MODUL III]: PENGURUTAN DATA (Bubble Sort pada Linked List)
-// =================================================================
 void bubbleSortByTitle(){
     if (awal == NULL) return;
     int swapped;
@@ -225,13 +241,10 @@ void bubbleSortByTitle(){
             }
             ptr1 = ptr1->kanan;
         }
-        lptr = ptr1; // Optimasi Bubble Sort
+        lptr = ptr1; 
     } while (swapped);
 }
 
-// =================================================================
-// [MODUL III]: PENGURUTAN DATA (Selection Sort pada Linked List)
-// =================================================================
 void selectionSortByYear(int descending){
     if (awal == NULL) return;
     struct Buku *i, *j, *idx;
@@ -253,25 +266,28 @@ void selectionSortByYear(int descending){
 
 void urutkanBuku(){
     int pilihan;
-    printf("\n=== Menu Urut Buku ===\n");
-    printf("1. Urutkan Judul (A-Z)\n");
-    printf("2. Urutkan Tahun (Terlama -> Terbaru)\n");
-    printf("3. Urutkan Tahun (Terbaru -> Terlama)\n");
-    printf("Pilih jenis urutan: ");
+    printf("\n +================================================+\n");
+    printf(" |              [~] MENU URUTKAN BUKU             |\n");
+    printf(" +================================================+\n");
+    printf("  [1] Berdasarkan Judul (A-Z)\n");
+    printf("  [2] Berdasarkan Tahun (Terlama -> Terbaru)\n");
+    printf("  [3] Berdasarkan Tahun (Terbaru -> Terlama)\n");
+    printf(" --------------------------------------------------\n");
+    printf("  [?] Pilih gaya urutan (1-3): ");
     scanf("%d", &pilihan);
     getchar();
 
     if (pilihan == 1) {
         bubbleSortByTitle();
-        printf("Data berhasil diurutkan berdasarkan judul.\n");
+        printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan judul abjad (A-Z).\n");
     } else if (pilihan == 2) {
         selectionSortByYear(0);
-        printf("Data berhasil diurutkan berdasarkan tahun (terlama -> terbaru).\n");
+        printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terlama.\n");
     } else if (pilihan == 3) {
         selectionSortByYear(1);
-        printf("Data berhasil diurutkan berdasarkan tahun (terbaru -> terlama).\n");
+        printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terbaru.\n");
     } else {
-        printf("Pilihan urutan tidak valid.\n");
+        printf("\n  [!] Pilihan urutan tidak valid.\n");
         return;
     }
     simpanFile();
@@ -279,7 +295,10 @@ void urutkanBuku(){
 
 void hapusBuku(){
     char kode[10];
-    printf("\nMasukkan kode buku: ");
+    printf("\n +================================================+\n");
+    printf(" |                 [-] HAPUS BUKU                 |\n");
+    printf(" +================================================+\n");
+    printf("  >> Masukkan KODE BUKU yang ingin dihapus: ");
     scanf("%s", kode);
 
     struct Buku *bantu = awal;
@@ -294,7 +313,6 @@ void hapusBuku(){
     }
 
     if (found) {
-        // [MODUL VI]: Logika Penghapusan Node pada Linked List Ganda
         if (bantu == awal && bantu == akhir) {
             awal = NULL;
             akhir = NULL;
@@ -308,17 +326,20 @@ void hapusBuku(){
             bantu->kiri->kanan = bantu->kanan;
             bantu->kanan->kiri = bantu->kiri;
         }
-        free(bantu); // Dealokasi memori Pointer
+        free(bantu); 
         simpanFile();
-        printf("Data berhasil dihapus!\n");
+        printf("\n  [✓] Data buku dengan kode %s berhasil dihapus selamanya!\n", kode);
     } else {
-        printf("Data tidak ditemukan!\n");
+        printf("\n  [!] Data tidak ditemukan, pastikan kode buku sudah benar!\n");
     }
 }
 
 void pinjamanBuku(){
     char kode[10];
-    printf("\nMasukkan kode buku yang ingin di pinjam:");
+    printf("\n +================================================+\n");
+    printf(" |               [>] PINJAM BUKU                  |\n");
+    printf(" +================================================+\n");
+    printf("  >> Masukkan KODE BUKU yang ingin dipinjam: ");
     scanf("%s", kode);
 
     struct Buku *bantu = awal;
@@ -334,18 +355,21 @@ void pinjamanBuku(){
         if (bantu->status == 0) {
             bantu->status = 1;
             simpanFile();
-            printf("Buku berhasil dipinjam!!\n");
+            printf("\n  [✓] BERHASIL! Buku \"%s\" kini berstatus dipinjam.\n", bantu->judul);
         } else {
-            printf("Buku sedang dipinjam!!\n");
+            printf("\n  [!] MAAF! Buku \"%s\" saat ini sedang dipinjam orang lain.\n", bantu->judul);
         }
     } else {
-        printf("Buku tidak ditemukan!\n");
+        printf("\n  [!] Buku dengan kode tersebut tidak ditemukan!\n");
     }
 }
 
 void kembalikanbuku(){
     char kode[10];
-    printf("\nMasukkan kode buku yang ingin dikembalikan:");
+    printf("\n +================================================+\n");
+    printf(" |             [<] KEMBALIKAN BUKU                |\n");
+    printf(" +================================================+\n");
+    printf("  >> Masukkan KODE BUKU yang ingin dikembalikan: ");
     scanf("%s", kode);
 
     struct Buku *bantu = awal;
@@ -361,12 +385,12 @@ void kembalikanbuku(){
         if (bantu->status == 1) {
             bantu->status = 0;
             simpanFile();
-            printf("Buku berhasil dikembalikan!\n");
+            printf("\n  [✓] TERIMA KASIH! Buku \"%s\" telah dikembalikan ke rak.\n", bantu->judul);
         } else {
-            printf("Buku tidak sedang dipinjam!\n");
+            printf("\n  [!] Buku \"%s\" berstatus tersedia, tidak sedang dipinjam.\n", bantu->judul);
         }
     } else {
-        printf("Buku tidak ditemukan!\n");
+        printf("\n  [!] Buku dengan kode tersebut tidak ditemukan!\n");
     }
 }
 
@@ -374,21 +398,18 @@ int main(){
     loadFile();
     int pilihan;
     do {
-        printf("\n==============================================================\n");
-        printf("                 SISTEM PERPUSTAKAAN MINI                  \n");
-        printf("==============================================================\n");
-        printf("1. Tambah Buku\n");
-        printf("2. Tampil Semua Buku\n");
-        printf("3. Tampil Buku Tersedia\n");
-        printf("4. Tampil Buku Dipinjam\n");
-        printf("5. Cari Buku\n");
-        printf("6. Urutkan Buku\n");
-        printf("7. Hapus Buku\n");
-        printf("8. Pinjam Buku\n");
-        printf("9. Kembalikan Buku\n");
-        printf("10. Keluar\n");
-        printf("==============================================================\n");
-        printf("Pilih menu: ");
+        printf("\n=================================================================\n");
+        printf("||                   SISTEM PERPUSTAKAAN MINI                  ||\n");
+        printf("||                   ------------------------                  ||\n");
+        printf("||               (Doubly Linked List Edition)                  ||\n");
+        printf("=================================================================\n");
+        printf("  [1] Tambah Buku Baru             [6] Urutkan Daftar Buku\n");
+        printf("  [2] Tampilkan Semua Buku         [7] Hapus Buku dari Sistem\n");
+        printf("  [3] Tampilkan Buku Tersedia      [8] Pinjam Buku\n");
+        printf("  [4] Tampilkan Buku Dipinjam      [9] Kembalikan Buku\n");
+        printf("  [5] Cari Judul Buku              [10] Keluar & Simpan\n");
+        printf("-----------------------------------------------------------------\n");
+        printf("  [?] Masukkan Pilihan Menu (1-10) : ");
         scanf("%d", &pilihan);
         getchar();
 
@@ -402,8 +423,11 @@ int main(){
             case 7: hapusBuku(); break;
             case 8: pinjamanBuku(); break;
             case 9: kembalikanbuku(); break;
-            case 10: printf("Terima kasih!\n"); break;
-            default: printf("Pilihan tidak valid!\n");
+            case 10: 
+                printf("\n  [✓] Data telah disimpan. Terima kasih telah menggunakan sistem ini!\n\n"); 
+                break;
+            default: 
+                printf("\n  [!] Pilihan tidak valid! Silakan pilih nomor 1 sampai 10.\n");
         }
     } while (pilihan != 10);
     return 0;

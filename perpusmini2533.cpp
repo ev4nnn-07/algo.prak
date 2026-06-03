@@ -271,13 +271,13 @@ void urutkanBuku(){
     getchar();
 
     if (pilihan == 1) {
-        bubbleSortByTitle();
+        bubbleSortByTitle();// Menggunakan Bubble Sort untuk Judul
         printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan judul abjad (A-Z).\n");
     } else if (pilihan == 2) {
-        selectionSortByYear(0);
+        selectionSortByYear(0);// Menggunakan Selection Sort (Ascending)
         printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terlama.\n");
     } else if (pilihan == 3) {
-        selectionSortByYear(1);
+        selectionSortByYear(1);// Menggunakan Selection Sort (Descending)
         printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terbaru.\n");
     } else {
         printf("\n  [!] Pilihan urutan tidak valid.\n");
@@ -294,7 +294,7 @@ void hapusBuku(){
     printf("  >> Masukkan KODE BUKU yang ingin dihapus: ");
     scanf("%s", kode);
 
-    struct Buku *bantu = awal;
+    struct Buku *bantu = awal; // Cari buku dengan kode yang sesuai
     int found = 0;
 
     while (bantu != NULL) {
@@ -375,8 +375,8 @@ void kembalikanbuku(){
     }
 
     if (found) {
-        if (bantu->status == 1) {
-            bantu->status = 0;
+        if (bantu->status == 1) { // Jika statusnya dipinjam
+            bantu->status = 0; // Ubah kembali jadi tersedia
             simpanFile();
             printf("\n  [✓] TERIMA KASIH! Buku \"%s\" telah dikembalikan ke rak.\n", bantu->judul);
         } else {
@@ -416,7 +416,7 @@ int main(){
             case 9: kembalikanbuku(); break;
             case 0: 
                 printf("\n  [✓] Data telah disimpan. Terima kasih telah menggunakan sistem ini!\n\n"); 
-                break;
+                break; // Ini akan menghentikan loop do-while di main()
             default: 
                 printf("\n  [!] Pilihan tidak valid! Silakan pilih nomor 1 sampai 10.\n");
         }

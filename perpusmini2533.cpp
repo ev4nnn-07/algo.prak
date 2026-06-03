@@ -139,7 +139,6 @@ void cariBuku(){
     }
 }
 
-// ============== PERBAIKAN TOTAL TABEL & STRING ==============
 void printLine() {
     printf(" +------+------------+--------------------------------+--------------------------------+--------+------------+\n");
 }
@@ -154,17 +153,13 @@ void printBook(struct Buku *buku, int nomor){
     char tempJudul[35] = {0};
     char tempPenulis[35] = {0};
     
-    // 1. Ambil maksimal 30 karakter saja dengan aman
-    strncpy(tempJudul, buku->judul, 30);
-    tempJudul[30] = '\0'; // Pastikan terkunci dengan null terminator
-    
+    strncpy(tempJudul, buku->judul, 30); // Buat motong kalimat yang lebih dari 30 menjadi 30 agar tidak merusak tabel
+    tempJudul[30] = '\0'; 
     strncpy(tempPenulis, buku->penulis, 30);
     tempPenulis[30] = '\0';
 
-    // 2. Filter pembersih karakter sampah/tersembunyi dari file data.dat
-    // Jika ada karakter di luar alfabet/angka (ASCII < 32 atau > 126), jadikan spasi.
     for(int i = 0; i < 30 && tempJudul[i] != '\0'; i++) {
-        if((unsigned char)tempJudul[i] < 32 || (unsigned char)tempJudul[i] > 126) {
+        if((unsigned char)tempJudul[i] < 32 || (unsigned char)tempJudul[i] > 126) {// Untuk mengecek apakah ada karakter aaneh yang tersembunyi supaya tidak glitch akibat file biner menggantikannya dengan spasi biasa
             tempJudul[i] = ' '; 
         }
     }
@@ -174,12 +169,10 @@ void printBook(struct Buku *buku, int nomor){
         }
     }
 
-    // 3. Cetak menggunakan string yang sudah sangat bersih
     printf(" | %-4d | %-10s | %-30s | %-30s | %-6d | %-10s |\n",
            nomor, buku->kode, tempJudul, tempPenulis,
-           buku->tahun, buku->status == 0 ? "Tersedia" : "Dipinjam");
+           buku->tahun, buku->status == 0 ? "Tersedia" : "Dipinjam"); // Untuk status buku apakah dipinjam atau tidak
 }
-// ============================================================
 
 void tampilBukuFilter(int status){
     if (awal == NULL) {
@@ -194,12 +187,12 @@ void tampilBukuFilter(int status){
     else 
         printf("\n >>> DAFTAR BUKU YANG SEDANG DIPINJAM <<<\n");
 
-    printHeader();
-    int no = 1, found = 0;
-    struct Buku *bantu = awal;
+    printHeader();// tabel
+    int no = 1, found = 0; // Penomeran dari 1
+    struct Buku *bantu = awal; // mulailah ia berjalan dari satu buku ke buku lainnya di dalam Linked List
     
     while (bantu != NULL) {
-        if (status == -1 || bantu->status == status) {
+        if (status == -1 || bantu->status == status) { // kode pengecekan:
             printBook(bantu, no);
             no++;
             found = 1;
@@ -210,7 +203,7 @@ void tampilBukuFilter(int status){
     if (!found) {
         printf(" | %-105s |\n", "                                         (Tidak ada data buku pada kategori ini)");
     }
-    printLine();
+    printLine(); // lansgung diatahkan ke printLine atau tabel yang sudah disiapkan
 }
 
 void swapData(struct Buku *a, struct Buku *b) {
@@ -405,7 +398,7 @@ int main(){
         printf("  [2] Tampilkan Semua Buku         [7] Hapus Buku dari Sistem\n");
         printf("  [3] Tampilkan Buku Tersedia      [8] Pinjam Buku\n");
         printf("  [4] Tampilkan Buku Dipinjam      [9] Kembalikan Buku\n");
-        printf("  [5] Cari Judul Buku              [10] Keluar & Simpan\n");
+        printf("  [5] Cari Judul Buku              [0] Keluar & Simpan\n");
         printf("-----------------------------------------------------------------\n");
         printf("  [?] Masukkan Pilihan Menu (1-10) : ");
         scanf("%d", &pilihan);
@@ -421,12 +414,12 @@ int main(){
             case 7: hapusBuku(); break;
             case 8: pinjamanBuku(); break;
             case 9: kembalikanbuku(); break;
-            case 10: 
+            case 0: 
                 printf("\n  [✓] Data telah disimpan. Terima kasih telah menggunakan sistem ini!\n\n"); 
                 break;
             default: 
                 printf("\n  [!] Pilihan tidak valid! Silakan pilih nomor 1 sampai 10.\n");
         }
-    } while (pilihan != 10);
+    } while (pilihan != 0);
     return 0;
 }

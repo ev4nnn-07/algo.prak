@@ -275,7 +275,7 @@ void urutkanBuku(){
         printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan judul abjad (A-Z).\n");
     } else if (pilihan == 2) {
         selectionSortByYear(0);// Menggunakan Selection Sort (Ascending)
-        printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terlama.\n");
+        printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun te rlama.\n");
     } else if (pilihan == 3) {
         selectionSortByYear(1);// Menggunakan Selection Sort (Descending)
         printf("\n  [✓] Sukses! Data berhasil diurutkan berdasarkan tahun terbaru.\n");
@@ -352,7 +352,7 @@ void pinjamanBuku(){
         } else {
             printf("\n  [!] MAAF! Buku \"%s\" saat ini sedang dipinjam orang lain.\n", bantu->judul);
         }
-    } else {
+    } else {adsdadas
         printf("\n  [!] Buku dengan kode tersebut tidak ditemukan!\n");
     }
 }
